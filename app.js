@@ -16,51 +16,59 @@ let currentFilter = 'all';
 const MEDAL_DESCRIPTIONS = {
     1: {
         title: 'هفته ۱: جرقه',
-        icon: 'fa-fire',
+        
         color: '#ff3333',
-        desc: 'اولین هفته کامل! اینجاست که جرقه شروع می‌شه. بدنت یاد می‌گیره که تعهد یعنی تعهد. آتش درونت روشن شده — نذار خاموش بشه.'
+        desc: 'اولین هفته کامل! اینجاست که جرقه شروع می‌شه. بدنت یاد می‌گیره که تعهد یعنی تعهد. آتش درونت روشن شده — نذار خاموش بشه.',
+        svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:60%;height:60%"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>'
     },
     2: {
         title: 'هفته ۲: اراده آهنین',
-        icon: 'fa-shield-alt',
+
         color: '#00f3ff',
-        desc: 'دو هفته پشت سر هم! اراده‌ات مثل فولاد سخت شده. آدم‌های معمولی هفته اول رو می‌بازن — تو از اون‌ها قوی‌تری.'
+        desc: 'دو هفته پشت سر هم! اراده‌ات مثل فولاد سخت شده. آدم‌های معمولی هفته اول رو می‌بازن — تو از اون‌ها قوی‌تری.',
+        svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:60%;height:60%"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4" stroke-width="2.5"/></svg>'
     },
     3: {
         title: 'هفته ۳: ماشین',
-        icon: 'fa-microchip',
+
         color: '#bc13fe',
-        desc: 'سه هفته! الان دیگه یه ماشینی. عادت‌ها توی بدنت نصب شدن. دیگه با انگیزه کار نمی‌کنی — با سیستم کار می‌کنی.'
+        desc: 'سه هفته! الان دیگه یه ماشینی. عادت‌ها توی بدنت نصب شدن. دیگه با انگیزه کار نمی‌کنی — با سیستم کار می‌کنی.',
+        svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:60%;height:60%"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/></svg>'
     },
     4: {
         title: 'هفته ۴: نشکستنی',
-        icon: 'fa-gem',
+
         color: '#00ff66',
-        desc: 'یک ماه کامل! تو مثل الماس شدی — تحت فشار شکل گرفتی و حالا نشکستنی هستی. اکثر آدم‌ها هیچ‌وقت به اینجا نمی‌رسن.'
+        desc: 'یک ماه کامل! تو مثل الماس شدی — تحت فشار شکل گرفتی و حالا نشکستنی هستی. اکثر آدم‌ها هیچ‌وقت به اینجا نمی‌رسن.',
+        svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:60%;height:60%"><polygon points="6 3 18 3 22 9 12 22 2 9 6 3"/><line x1="2" y1="9" x2="22" y2="9"/><line x1="12" y1="22" x2="12" y2="9"/><line x1="6" y1="3" x2="12" y2="9"/><line x1="18" y1="3" x2="12" y2="9"/></svg>'
     },
     5: {
         title: 'هفته ۵: استاد',
-        icon: 'fa-crown',
+
         color: '#ffd700',
-        desc: 'پنج هفته! تو حالا استادی. تاج لیاقتت رو گذاشتی. آدم‌های اطرافت تغییر رو می‌بینن — چه بخوان چه نخوان.'
+        desc: 'پنج هفته! تو حالا استادی. تاج لیاقتت رو گذاشتی. آدم‌های اطرافت تغییر رو می‌بینن — چه بخوان چه نخوان.',
+        svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:60%;height:60%"><path d="M2 20h20M2 17l4-10 6 5 6-5 4 10H2z"/><circle cx="6" cy="7" r="1.5" fill="currentColor"/><circle cx="12" cy="2" r="1.5" fill="currentColor"/><circle cx="18" cy="7" r="1.5" fill="currentColor"/></svg>'
     },
     6: {
         title: 'هفته ۶: افسانه',
-        icon: 'fa-dragon',
+
         color: '#ff00ff',
-        desc: 'شش هفته! وارد قلمرو افسانه‌ها شدی. کمتر از ۱٪ آدم‌ها اینجا می‌رسن. تو دیگه یه داستان هستی که دیگران تعریف می‌کنن.'
+        desc: 'شش هفته! وارد قلمرو افسانه‌ها شدی. کمتر از ۱٪ آدم‌ها اینجا می‌رسن. تو دیگه یه داستان هستی که دیگران تعریف می‌کنن.',
+        svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:60%;height:60%"><path d="M12 2C8 2 4 5 4 10c0 3 2 5 4 7v3h8v-3c2-2 4-4 4-7 0-5-4-8-8-8z"/><circle cx="9" cy="10" r="1.5" fill="currentColor"/><circle cx="15" cy="10" r="1.5" fill="currentColor"/><path d="M8 16c1.5 1 6.5 1 8 0" stroke-width="1.5"/><path d="M2 12c0-3 3-3 5-2" stroke-width="2"/><path d="M22 12c0-3-3-3-5-2" stroke-width="2"/></svg>'
     },
     7: {
         title: 'هفته ۷: تایتان',
-        icon: 'fa-meteor',
+
         color: '#ff8c00',
-        desc: 'هفت هفته! تایتان شدی. قدرتی داری که خودت هم باور نمی‌کنی. این دیگه یه چالش نیست — این یه سبک زندگیه.'
+        desc: 'هفت هفته! تایتان شدی. قدرتی داری که خودت هم باور نمی‌کنی. این دیگه یه چالش نیست — این یه سبک زندگیه.',
+        svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:60%;height:60%"><circle cx="12" cy="12" r="6"/><ellipse cx="12" cy="12" rx="10" ry="3" transform="rotate(-30 12 12)"/><circle cx="10" cy="10" r="1" fill="currentColor"/><circle cx="14" cy="11" r="1" fill="currentColor"/><circle cx="12" cy="14" r="1" fill="currentColor"/></svg>'
     },
     8: {
         title: 'هفته ۸: جاویدان',
-        icon: 'fa-infinity',
+
         color: '#ffffff',
-        desc: 'هشت هفته! ۵۶ روز کامل! تو جاودان شدی. این مدال سفید، نماد خلوص و کماله. تو ثابت کردی که اراده انسانی حدی نداره. آیرون‌من واقعی تو هستی.'
+        desc: 'هشت هفته! ۵۶ روز کامل! تو جاودان شدی. این مدال سفید، نماد خلوص و کماله. تو ثابت کردی که اراده انسانی حدی نداره. آیرون‌من واقعی تو هستی.',
+        svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:60%;height:60%"><path d="M12 12c2-3 4-4 6-2s2 4 0 6-6 1-6-4 4-6 6-4 4 4 2 6-6 3-8-2z"/><path d="M12 12c-2-3-4-4-6-2s-2 4 0 6 6 1 6-4-4-6-6-4-4 4-2 6 6 3 8-2z"/></svg>'
     }
 };
 
@@ -1462,19 +1470,17 @@ function openMedalModal(medalIndex) {
     iconEl.style.color = info.color;
     iconEl.style.borderColor = info.color;
     iconEl.style.boxShadow = isUnlocked ? `0 0 30px ${info.color}` : 'none';
-    iconEl.innerHTML = `<i class="fas ${info.icon}"></i>`;
+    iconEl.innerHTML = info.svg;
 
     // عنوان
     document.getElementById('medal-modal-title').innerText = info.title;
 
     // وضعیت
     const statusEl = document.getElementById('medal-modal-status');
-    if (isUnlocked) {
-        statusEl.innerText = '✅ باز شده';
-        statusEl.className = 'text-sm mt-2 text-cyber-success font-bold';
+        if (isUnlocked) {
+        statusEl.innerHTML = '<span class="text-cyber-success">✅ باز شده</span>';
     } else {
-        statusEl.innerText = '🔒 قفل';
-        statusEl.className = 'text-sm mt-2 text-cyber-muted';
+        statusEl.innerHTML = '<span class="text-cyber-muted">🔒 قفل</span>';
     }
 
     // توضیح
