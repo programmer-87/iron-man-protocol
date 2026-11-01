@@ -76,6 +76,29 @@ const STORAGE_KEY = 'ironManProtocolData';
 // =========================================
 let audioCtx = null;
 
+// =========================================
+// Theme Management
+// =========================================
+function initTheme() {
+    const savedTheme = localStorage.getItem('ironManTheme') || 'dark';
+    if (savedTheme === 'light') {
+        document.documentElement.classList.add('light-theme');
+        const icon = document.getElementById('theme-icon');
+        if (icon) icon.classList.replace('fa-sun', 'fa-moon');
+    }
+}
+
+function toggleTheme() {
+    const isLight = document.documentElement.classList.toggle('light-theme');
+    localStorage.setItem('ironManTheme', isLight ? 'light' : 'dark');
+    
+    const icon = document.getElementById('theme-icon');
+    if (icon) {
+        icon.classList.replace(isLight ? 'fa-sun' : 'fa-moon', isLight ? 'fa-moon' : 'fa-sun');
+    }
+    playTickSound();
+}
+
 function initAudio() {
     if (!audioCtx) {
         try {
@@ -411,6 +434,7 @@ function updateStats() {
 function initApp() {
         // فعال‌سازی Audio با اولین کلیک (به‌خاطر سیاست مرورگرها)
     document.addEventListener('click', initAudio, { once: true });
+    initTheme();
     loadData();
     renderGrid();
     updateStats();
@@ -520,6 +544,25 @@ function initApp() {
         });
     }
 
+        // تم
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
+
+    // دستیار صوتی
+    const voiceCommandBtn = document.getElementById('voice-command-btn');
+    const voiceHelpModal = document.getElementById('voice-help-modal');
+    const closeVoiceHelpBtn = document.getElementById('close-voice-help-btn');
+    const dismissVoiceHelp = document.getElementById('dismiss-voice-help');
+
+    if (voiceCommandBtn) voiceCommandBtn.addEventListener('click', startVoiceCommand);
+    if (closeVoiceHelpBtn) closeVoiceHelpBtn.addEventListener('click', closeVoiceHelp);
+    if (dismissVoiceHelp) dismissVoiceHelp.addEventListener('click', closeVoiceHelp);
+    if (voiceHelpModal) {
+        voiceHelpModal.addEventListener('click', (e) => {
+            if (e.target === voiceHelpModal) closeVoiceHelp();
+        });
+    }
+
     if (closeStatsBtn) {
         closeStatsBtn.addEventListener('click', () => {
             statsModal.classList.add('hidden');
@@ -579,6 +622,7 @@ function initApp() {
                 document.getElementById('stats-modal').classList.remove('flex');
                 document.body.style.overflow = 'auto';
             }
+            if (document.getElementById('voice-help-modal').style.display === 'flex') closeVoiceHelp();
         }
     });
 }
@@ -1574,4 +1618,138 @@ function loadFocusStats() {
     }
 
     return stats;
+}
+
+// =========================================
+// 25. Voice Commands
+// =========================================
+let commandRecognition = null;
+let isCommandListening = false;
+
+if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    commandRecognition = new SpeechRecognition();
+    commandRecognition.continuous = false;
+    commandRecognition.interimResults = false;
+    commandRecognition.lang = 'fa-IR';
+}
+
+function startVoiceCommand() {
+    if (!commandRecognition) {
+        showToast('مرورگر شما از دستورات صوتی پشتیبانی نمی‌کند.', 'error');
+        return;
+    }
+
+    if (isCommandListening) {
+        commandRecognition.stop();
+        return;
+    }
+
+    isCommandListening = true;
+    const btn = document.getElementById('voice-command-btn');
+    const icon = document.getElementById('voice-command-icon');
+    
+    btn.classList.add('recording', 'bg-cyber-danger/20', 'border-cyber-danger', 'text-cyber-danger');
+    btn.classList.remove('bg-cyber-neon/20', 'border-cyber-neon', 'text-cyber-neon');
+    icon.classList.replace('fa-microphone', 'fa-spinner');
+    icon.classList.add('fa-spin');
+
+    commandRecognition.onstart = () => {
+        showToast('گوش می‌دم...', 'info');
+    };
+
+    commandRecognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript.trim();
+        showToast(`شنیدم: "${transcript}"`, 'info');
+        processVoiceCommand(transcript);
+    };
+
+    commandRecognition.onerror = (event) => {
+        console.error("Voice error:", event.error);
+        if (event.error !== 'no-speech') {
+            showToast('خطا در شنیدن صدا.', 'error');
+        }
+    };
+
+    commandRecognition.onend = () => {
+        isCommandListening = false;
+        btn.classList.remove('recording', 'bg-cyber-danger/20', 'border-cyber-danger', 'text-cyber-danger');
+        btn.classList.add('bg-cyber-neon/20', 'border-cyber-neon', 'text-cyber-neon');
+        icon.classList.remove('fa-spin');
+        icon.classList.replace('fa-spinner', 'fa-microphone');
+    };
+
+    commandRecognition.start();
+}
+
+function processVoiceCommand(text) {
+    // نرمال‌سازی متن (تبدیل اعداد فارسی به انگلیسی)
+    const normalized = text
+        .replace(/صفر/g, '0').replace(/یک/g, '1').replace(/دو/g, '2')
+        .replace(/سه/g, '3').replace(/چهار/g, '4').replace(/پنج/g, '5')
+        .replace(/شش/g, '6').replace(/هفت/g, '7').replace(/هشت/g, '8')
+        .replace(/نه/g, '9').replace(/ده/g, '10');
+
+    // 1. دستور تیک زدن
+    if (normalized.includes('تیک') && normalized.includes('قانون')) {
+        const match = normalized.match(/قانون\s*(\d+)/);
+        if (match) {
+            const ruleIndex = parseInt(match[1]);
+            if (ruleIndex >= 0 && ruleIndex < TOTAL_HABITS) {
+                const currentDayIndex = appData.currentDay - 1;
+                const boxEl = document.querySelectorAll('.day-row.active-day .check-box')[ruleIndex];
+                
+                if (boxEl && !boxEl.classList.contains('checked')) {
+                    toggleCheck(currentDayIndex, ruleIndex, boxEl);
+                    showToast(`قانون ${ruleIndex} تیک زده شد.`, 'success');
+                } else if (boxEl) {
+                    showToast(`قانون ${ruleIndex} قبلاً تیک خورده.`, 'info');
+                } else {
+                    showToast('روز فعال پیدا نشد.', 'error');
+                }
+                return;
+            }
+        }
+    }
+
+    // 2. حالت تمرکز
+    if (normalized.includes('تمرکز') || normalized.includes('فوکوس')) {
+        if (!focusOverlay.classList.contains('active')) toggleFocusMode();
+        return;
+    }
+
+    // 3. آمار
+    if (normalized.includes('آمار') || normalized.includes('نمودار')) {
+        if (document.getElementById('stats-modal').classList.contains('hidden')) {
+            document.getElementById('stats-btn').click();
+        }
+        return;
+    }
+
+    // 4. شکست
+    if (normalized.includes('شکست') || normalized.includes('باختم')) {
+        openFailModal();
+        return;
+    }
+
+    // 5. راهنما
+    if (normalized.includes('راهنما') || normalized.includes('کمک')) {
+        openVoiceHelp();
+        return;
+    }
+
+    showToast('دستور رو متوجه نشدم. راهنما رو ببین.', 'error');
+    openVoiceHelp();
+}
+
+function openVoiceHelp() {
+    const modal = document.getElementById('voice-help-modal');
+    modal.classList.remove('hidden');
+    modal.style.display = 'flex';
+}
+
+function closeVoiceHelp() {
+    const modal = document.getElementById('voice-help-modal');
+    modal.classList.add('hidden');
+    modal.style.display = 'none';
 }

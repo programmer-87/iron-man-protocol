@@ -527,3 +527,92 @@ canvas {
     max-height: 100%;
     width: 100% !important;
 }
+
+/* =========================================
+   19. Light Theme (تم روشن)
+   ========================================= */
+.light-theme {
+    --cyber-bg: #f5f7fa;
+    --cyber-panel: #ffffff;
+    --cyber-border: #e2e8f0;
+    --cyber-neon: #0088cc; /* آبی تیره‌تر برای خوانایی در پس‌زمینه روشن */
+    --cyber-purple: #7c3aed;
+    --cyber-success: #059669;
+    --cyber-danger: #dc2626;
+    --cyber-muted: #64748b;
+}
+
+.light-theme body {
+    background-color: var(--cyber-bg);
+    color: #1e293b;
+    background-image: 
+        linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+}
+
+.light-theme .text-white {
+    color: #0f172a !important;
+}
+
+.light-theme .bg-black\/30,
+.light-theme .bg-black\/40,
+.light-theme .bg-black\/20 {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+.light-theme .bg-cyber-bg {
+    background-color: var(--cyber-bg) !important;
+}
+
+.light-theme .bg-cyber-bg\/98 {
+    background-color: rgba(245, 247, 250, 0.98) !important;
+}
+
+.light-theme .bg-cyber-bg\/90 {
+    background-color: rgba(245, 247, 250, 0.9) !important;
+}
+
+/* اصلاح رنگ‌های درخشنده برای پس‌زمینه روشن */
+.light-theme .drop-shadow-\[0_0_10px_rgba\(0\,243\,255\,0\.5\)\] {
+    filter: drop-shadow(0 0 5px rgba(0, 136, 204, 0.3)) !important;
+}
+
+.light-theme .shadow-\[0_0_20px_rgba\(0\,243\,255\,0\.05\)\] {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+}
+
+.light-theme .check-box {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.light-theme .check-box.checked {
+    background: rgba(0, 136, 204, 0.1);
+    border-color: var(--cyber-neon);
+}
+
+.light-theme .check-box::before {
+    background: #cbd5e1;
+}
+
+.light-theme .check-box.checked::before {
+    background: var(--cyber-neon);
+}
+
+.light-theme .day-row:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.light-theme .day-row.active-day {
+    background-color: rgba(0, 136, 204, 0.05);
+}
+
+.light-theme .chart-container,
+.light-theme canvas {
+    filter: none;
+}
+
+/* دکمه شناور میکروفون */
+#voice-command-btn.recording {
+    animation: pulse-recording 1.5s infinite;
+}

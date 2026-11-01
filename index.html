@@ -101,6 +101,9 @@
                 <button id="stats-btn" class="text-cyber-purple hover:text-white transition-colors duration-300 p-2 border border-cyber-border rounded-lg hover:border-cyber-purple" title="آمار کامل">
                     <i class="fas fa-chart-pie"></i>
                 </button>
+                <button id="theme-toggle-btn" class="text-cyber-muted hover:text-cyber-neon transition-colors duration-300 p-2 border border-cyber-border rounded-lg hover:border-cyber-neon" title="تغییر تم">
+                    <i class="fas fa-sun" id="theme-icon"></i>
+                </button>
                 <input type="file" id="import-file" accept=".json,.csv" style="display: none;">
             </div>
         </div>
@@ -431,6 +434,33 @@
 
         </div>
     </main>
+
+    <!-- دکمه شناور دستیار صوتی -->
+<button id="voice-command-btn" class="fixed bottom-6 right-6 w-14 h-14 bg-cyber-neon/20 border-2 border-cyber-neon text-cyber-neon rounded-full flex items-center justify-center z-[90] hover:bg-cyber-neon hover:text-black transition-all shadow-[0_0_15px_rgba(0,243,255,0.4)]">
+    <i class="fas fa-microphone text-xl" id="voice-command-icon"></i>
+</button>
+
+<!-- مودال راهنمای دستورات صوتی -->
+<div id="voice-help-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center">
+    <div class="bg-cyber-panel border border-cyber-neon rounded-xl p-8 max-w-md w-full mx-4 relative shadow-[0_0_30px_rgba(0,243,255,0.2)]">
+        <button id="close-voice-help-btn" class="absolute top-4 left-4 text-cyber-muted hover:text-white transition-colors">
+            <i class="fas fa-times text-xl"></i>
+        </button>
+        <div class="text-center mb-6">
+            <i class="fas fa-microphone text-cyber-neon text-4xl mb-4 drop-shadow-[0_0_10px_rgba(0,243,255,0.5)]"></i>
+            <h2 class="font-orbitron text-2xl text-white">دستیار صوتی</h2>
+            <p class="text-cyber-muted text-sm mt-2">با صدای بلند بگو تا اجرا کنم.</p>
+        </div>
+        <ul class="space-y-3 text-sm text-cyber-muted">
+            <li class="flex items-center gap-2"><i class="fas fa-check-circle text-cyber-success"></i> «تیک قانون ۳»</li>
+            <li class="flex items-center gap-2"><i class="fas fa-check-circle text-cyber-success"></i> «تیک قانون صفر»</li>
+            <li class="flex items-center gap-2"><i class="fas fa-crosshairs text-cyber-neon"></i> «حالت تمرکز»</li>
+            <li class="flex items-center gap-2"><i class="fas fa-chart-pie text-cyber-purple"></i> «آمار»</li>
+            <li class="flex items-center gap-2"><i class="fas fa-heart-broken text-cyber-danger"></i> «شکست»</li>
+        </ul>
+        <button id="dismiss-voice-help" class="w-full mt-6 bg-cyber-neon/10 border border-cyber-neon text-cyber-neon py-2 rounded-lg font-orbitron text-sm hover:bg-cyber-neon hover:text-black transition-all">متوجه شدم</button>
+    </div>
+</div>
 
     <!-- فوتر -->
     <footer class="border-t border-cyber-border mt-12 py-6 text-center text-xs text-cyber-muted">
