@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Icon Maker</title>
+  <style>body{background:#222;color:#0f0;font-family:monospace;padding:20px}</style>
+</head>
+<body>
+  <h1>ساخت آیکون‌ها</h1>
+  <p>اگه دکمه‌ها رو نمی‌بینی، پایین صفحه رو ببین.</p>
+  <button onclick="makeIcon(192)">دانلود ۱۹۲×۱۹۲</button>
+  <button onclick="makeIcon(512)">دانلود ۵۱۲×۵۱۲</button>
+  <div id="preview" style="margin-top:20px"></div>
+
+  <script>
+    async function makeIcon(size) {
+      const img = new Image();
+      img.src = 'icon.svg';
+      await new Promise((res, rej) => {
+        img.onload = res;
+        img.onerror = rej;
+      });
+      const c = document.createElement('canvas');
+      c.width = size;
+      c.height = size;
+      c.getContext('2d').drawImage(img, 0, 0, size, size);
+      c.toBlob(b => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(b);
+        a.download = `icon-${size}x${size}.png`;
+        a.click();
+      }, 'image/png');
+    }
+  </script>
+</body>
+</html>

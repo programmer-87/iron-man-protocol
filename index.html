@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Iron Man Protocol</title>
+
+    <!-- فونت وزیرمتن برای متن اصلی -->
+    <link rel="preconnect" href="https://fontnegar.ir/" crossorigin>
+    <link rel="stylesheet" href="https://fontnegar.ir/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap">
+
+    <!-- فونت استعداد برای تیترها -->
+    <link rel="stylesheet" href="https://fontnegar.ir/css2?family=Estedad:wght@400;500;700;800;900&display=swap">
+
+    <!-- آیکون‌های تکنولوژیک -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- استایل اصلی -->
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./responsive.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#0a0a0c">
+    <link rel="apple-touch-icon" href="./icon-192x192.png">
+
+    <!-- تنظیمات Tailwind (برای وایب سایبرپانک) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            bg: '#0a0a0c',
+                            panel: '#121218',
+                            border: '#2a2a35',
+                            neon: '#00f3ff',
+                            purple: '#bc13fe',
+                            success: '#00ff66',
+                            danger: '#ff3333',
+                            muted: '#666'
+                        }
+                    },
+                    fontFamily: {
+                        vazir: ['Vazirmatn', 'sans-serif'],
+                        orbitron: ['Estedad', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'grid-pattern': "linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px)",
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-cyber-bg text-gray-200 font-vazir min-h-screen bg-grid-pattern" style="background-size: 30px 30px;">
+
+    <!-- 1. هدر اصلی -->
+    <header class="border-b border-cyber-border bg-cyber-panel/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <i class="fas fa-shield-alt text-cyber-neon text-3xl animate-pulse"></i>
+                <div>
+                    <h1 class="font-orbitron text-2xl font-bold text-white tracking-widest drop-shadow-[0_0_10px_rgba(0,243,255,0.5)]">پروتکل آیرون‌من</h1>
+                    <p class="text-xs text-cyber-muted mt-1">چالش ۶۰ روزه انضباط</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+                <div class="text-center">
+                    <span class="block text-xs text-cyber-muted uppercase tracking-widest">روز جاری</span>
+                    <span id="header-current-day" class="font-orbitron text-xl font-bold text-cyber-neon">Day 1</span>
+                </div>
+                <div class="text-center border-r border-cyber-border pr-6">
+                    <span class="block text-xs text-cyber-muted uppercase tracking-widest">استریک</span>
+                    <span id="header-streak" class="font-orbitron text-xl font-bold text-cyber-purple drop-shadow-[0_0_10px_rgba(188,19,254,0.5)]">0</span>
+                </div>
+                <button id="reset-btn" class="text-cyber-danger hover:text-white transition-colors duration-300 p-2 border border-cyber-border rounded-lg hover:border-cyber-danger" title="ریست کامل داده‌ها">
+                    <i class="fas fa-power-off"></i>
+                </button>
+                <button id="focus-mode-btn" class="text-cyber-neon hover:text-white transition-colors duration-300 p-2 border border-cyber-border rounded-lg hover:border-cyber-neon" title="ورود به حالت تمرکز">
+                    <i class="fas fa-crosshairs"></i>
+                </button>
+                <button id="fail-btn" class="text-cyber-danger hover:text-white transition-colors duration-300 p-2 border border-cyber-border rounded-lg hover:border-cyber-danger" title="امروز شکست خوردم">
+                    <i class="fas fa-heart-broken"></i>
+                </button>
+                <button id="notification-btn" class="text-cyber-purple hover:text-white transition-colors duration-300 p-2 border border-cyber-border rounded-lg hover:border-cyber-purple" title="فعال‌سازی یادآورها">
+                    <i class="fas fa-bell"></i>
+                </button>
+                <button id="export-btn" class="text-cyber-success hover:text-white transition-colors duration-300 p-2 border border-cyber-border rounded-lg hover:border-cyber-success" title="دانلود بکاپ">
+                    <i class="fas fa-download"></i>
+                </button>
+                <button id="import-btn" class="text-cyber-neon hover:text-white transition-colors duration-300 p-2 border border-cyber-border rounded-lg hover:border-cyber-neon" title="بازیابی از بکاپ">
+                    <i class="fas fa-upload"></i>
+                </button>
+                <input type="file" id="import-file" accept=".json,.csv" style="display: none;">
+            </div>
+        </div>
+    </header>
+
+    <!-- محتوای اصلی -->
+    <main class="container mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- ستون سمت راست (آمار و قانون‌ها) -->
+        <aside class="lg:col-span-1 space-y-8">
+
+            <!-- 2. کارت آمار (Stats) -->
+            <section class="bg-cyber-panel border border-cyber-border rounded-xl p-6 shadow-[0_0_20px_rgba(0,243,255,0.05)] relative overflow-hidden group">
+                <div class="absolute inset-0 bg-gradient-to-br from-cyber-neon/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <h2 class="font-orbitron text-lg text-white mb-6 border-b border-cyber-border pb-2">وضعیت سیستم</h2>
+
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-cyber-muted">پیشرفت کلی</span>
+                            <span id="stat-progress-text" class="text-cyber-neon font-bold">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-800 rounded-full h-2">
+                            <div id="stat-progress-bar" class="bg-cyber-neon h-2 rounded-full shadow-[0_0_10px_rgba(0,243,255,0.8)]" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 pt-4">
+                        <div class="bg-black/30 p-3 rounded-lg border border-cyber-border/50 text-center">
+                            <span class="block text-xs text-cyber-muted mb-1">روزهای گذشته</span>
+                            <span id="stat-days-passed" class="font-orbitron text-lg text-white">0</span>
+                        </div>
+                        <div class="bg-black/30 p-3 rounded-lg border border-cyber-border/50 text-center">
+                            <span class="block text-xs text-cyber-muted mb-1">روزهای باقی‌مانده</span>
+                            <span id="stat-days-remaining" class="font-orbitron text-lg text-white">60</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- بخش ردیاب درآمد (Income Tracker) -->
+            <section class="bg-cyber-panel border border-cyber-border rounded-xl p-6">
+                <h2 class="font-orbitron text-lg text-white mb-4 border-b border-cyber-border pb-2">وضعیت مالی</h2>
+
+                <div class="mb-4">
+                    <label class="block text-xs text-cyber-muted mb-1">افزودن درآمد فریلنسری (تومان)</label>
+                    <div class="flex gap-2">
+                        <input type="number" id="income-input" placeholder="مثلاً ۵۰۰۰۰۰" class="w-full bg-black/40 border border-cyber-border rounded-lg p-2 text-sm text-white focus:outline-none focus:border-cyber-success transition-colors">
+                        <button id="add-income-btn" class="bg-cyber-success/10 border border-cyber-success text-cyber-success px-4 rounded-lg font-orbitron text-xs hover:bg-cyber-success hover:text-black transition-all">
+                            افزودن
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 pt-2">
+                    <div class="bg-black/30 p-3 rounded-lg border border-cyber-border/50 text-center">
+                        <span class="block text-xs text-cyber-muted mb-1">کل درآمد</span>
+                        <span id="stat-total-income" class="font-orbitron text-lg text-cyber-success">0</span>
+                    </div>
+                    <div class="bg-black/30 p-3 rounded-lg border border-cyber-border/50 text-center">
+                        <span class="block text-xs text-cyber-muted mb-1">این ماه</span>
+                        <span id="stat-month-income" class="font-orbitron text-lg text-cyber-success">0</span>
+                    </div>
+                </div>
+
+                <div id="recent-income-list" class="mt-4 space-y-1 text-xs text-cyber-muted max-h-24 overflow-y-auto custom-scrollbar">
+                    <!-- توسط JS پر می‌شود -->
+                </div>
+            </section>
+
+            <!-- بخش مدال‌ها (Trophy Case) -->
+            <section class="bg-cyber-panel border border-cyber-border rounded-xl p-6">
+                <h2 class="font-orbitron text-lg text-white mb-4 border-b border-cyber-border pb-2">ویترین افتخارات</h2>
+                <p class="text-xs text-cyber-muted mb-4">۷ روز متوالی را کامل کن تا مدال جدید باز شود.</p>
+
+                <div class="grid grid-cols-4 gap-3">
+                    <div id="medal-1" class="medal-box locked" title="هفته ۱: جرقه">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div id="medal-2" class="medal-box locked" title="هفته ۲: اراده آهنین">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div id="medal-3" class="medal-box locked" title="هفته ۳: ماشین">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <div id="medal-4" class="medal-box locked" title="هفته ۴: نشکستنی">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <div id="medal-5" class="medal-box locked" title="هفته ۵: استاد">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div id="medal-6" class="medal-box locked" title="هفته ۶: افسانه">
+                        <i class="fas fa-dragon"></i>
+                    </div>
+                    <div id="medal-7" class="medal-box locked" title="هفته ۷: تایتان">
+                        <i class="fas fa-meteor"></i>
+                    </div>
+                    <div id="medal-8" class="medal-box locked" title="هفته ۸: جاویدان">
+                        <i class="fas fa-infinity"></i>
+                    </div>
+                </div>
+            </section>
+
+            <!-- بخش نمودارها (Charts) -->
+            <section class="bg-cyber-panel border border-cyber-border rounded-xl p-6 shadow-[0_0_20px_rgba(0,243,255,0.05)]">
+                <h2 class="font-orbitron text-lg text-white mb-6 border-b border-cyber-border pb-2">معیارهای عملکرد</h2>
+
+                <div class="mb-8">
+                    <h3 class="text-xs text-cyber-muted mb-2 text-center uppercase tracking-widest">تسلط بر قوانین (رادار)</h3>
+                    <div class="relative h-48 w-full flex justify-center">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xs text-cyber-muted mb-2 text-center uppercase tracking-widest">روند پیشرفت (۱۰ روز اخیر)</h3>
+                    <div class="relative h-32 w-full">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- نمودار آمار هفتگی (Streak) -->
+                <div class="mt-6">
+                    <h3 class="text-xs text-cyber-muted mb-2 text-center uppercase tracking-widest">روند هفتگی (Streak)</h3>
+                    <div class="relative h-40 w-full">
+                        <canvas id="streakChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. کارت قانون‌ها (Rules) -->
+            <section class="bg-cyber-panel border border-cyber-border rounded-xl p-6">
+                <h2 class="font-orbitron text-lg text-white mb-4 border-b border-cyber-border pb-2">۱۱ پروتکل</h2>
+                <ul class="space-y-3 text-sm">
+                    <li class="flex items-center gap-3 text-cyber-muted hover:text-white transition-colors">
+                        <i class="fas fa-clock text-cyber-neon w-5 text-center"></i>
+                        <span><strong class="text-white">قانون ۰:</strong> بیدار ۰۶:۰۰ / خواب ۲۳:۰۰</span>
+                    </li>
+                    <li class="flex items-center gap-3 text-cyber-muted hover:text-white transition-colors">
+                        <i class="fas fa-tint text-cyber-neon w-5 text-center"></i>
+                        <span><strong class="text-white">قانون ۱:</strong> نوشیدن ۳ لیتر آب</span>
+                    </li>
+                    <li class="flex items-center gap-3 text-cyber-muted hover:text-white transition-colors">
+                        <i class="fas fa-dumbbell text-cyber-neon w-5 text-center"></i>
+                        <span><strong class="text-white">قانون ۲:</strong> ۴۵ دقیقه تمرین</span>
+                    </li>
+                    <li class="flex items-center gap-3 text-cyber-muted hover:text-white transition-colors">
+                        <i class="fas fa-bed text-cyber-neon w-5 text-center"></i>
+                        <span><strong class="text-white">قانون ۳:</strong> ۷ ساعت خواب</span>
+                    </li>
+                    <li class="flex items-center gap-3 text-cyber-muted hover:text-white transition-colors">
+                        <i class="fas fa-egg text-cyber-neon w-5 text-center"></i>
+                        <span><strong class="text-white">قانون ۴:</strong> صبحانه پروتئینی / بدون قند</span>
+                    </li>
+                    <li class="flex items-center gap-3 text-cyber-muted hover:text-white transition-colors">
+                        <i class="fas fa-code text-cyber-neon w-5 text-center"></i>
+                        <span><strong class="text-white">قانون ۵:</strong> ۱ ساعت انگلیسی + ۲ ساعت کار عمیق + ۳۰ دقیقه فریلنس</span>
+                    </li>
+                    <li class="flex items-center gap-3 text-cyber-muted hover:text-white transition-colors">
+                        <i class="fas fa-brain text-cyber-neon w-5 text-center"></i>
+                        <span><strong class="text-white">قانون ۶:</strong> ۱۰ دقیقه مدیتیشن (۴-۷-۸)</span>
+                    </li>
+                    <li class="flex items-center gap-3 text-cyber-muted hover:text-white transition-colors">
+                        <i class="fas fa-pen text-cyber-neon w-5 text-center"></i>
+                        <span><strong class="text-white">قانون ۷:</strong> ۳ بار دفترچه شکرگزاری</span>
+                    </li>
+                    <li class="flex items-center gap-3 text-cyber-muted hover:text-white transition-colors">
+                        <i class="fas fa-ban text-cyber-danger w-5 text-center"></i>
+                        <span><strong class="text-white">قانون ۸:</strong> بدون پورن</span>
+                    </li>
+                    <li class="flex items-center gap-3 text-cyber-muted hover:text-white transition-colors">
+                        <i class="fas fa-mobile-alt text-cyber-danger w-5 text-center"></i>
+                        <span><strong class="text-white">قانون ۹:</strong> بدون شبکه اجتماعی قبل از ۱۲:۰۰</span>
+                    </li>
+                    <li class="flex items-center gap-3 text-cyber-muted hover:text-white transition-colors">
+                        <i class="fas fa-gamepad text-cyber-danger w-5 text-center"></i>
+                        <span><strong class="text-white">قانون ۱۰:</strong> بدون بازی ویدیویی</span>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- بخش زنجیره عادت (Habit Stacking) -->
+            <section class="bg-cyber-panel border border-cyber-border rounded-xl p-6">
+                <div class="flex justify-between items-center mb-4 border-b border-cyber-border pb-2">
+                    <h2 class="font-orbitron text-lg text-white">زنجیره عادت</h2>
+                    <button id="add-stack-btn" class="text-cyber-neon hover:text-white transition-colors">
+                        <i class="fas fa-plus-circle"></i>
+                    </button>
+                </div>
+                <p class="text-xs text-cyber-muted mb-4">عادت‌های جدید را به روتین‌های موجودت گره بزن.</p>
+
+                <div id="stack-list" class="space-y-3">
+                    <!-- لیست زنجیره‌ها توسط JS پر می‌شود -->
+                </div>
+            </section>
+
+            <!-- بخش دفترچه خاطرات -->
+            <section class="bg-cyber-panel border border-cyber-border rounded-xl p-6">
+                <h2 class="font-orbitron text-lg text-white mb-2 border-b border-cyber-border pb-2">دفترچه روزانه</h2>
+                <p class="text-xs text-cyber-muted mb-4">افکار، پیروزی‌ها و چالش‌هایت را ثبت کن.</p>
+
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="text-xs text-cyber-neon">امروز چه یاد گرفتی؟</label>
+                            <button class="voice-btn text-cyber-neon hover:text-white transition-colors" data-target="log-learn" title="صحبت کن">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                        </div>
+                        <textarea id="log-learn" class="w-full bg-black/40 border border-cyber-border rounded-lg p-3 text-sm text-white focus:outline-none focus:border-cyber-neon transition-colors custom-scrollbar h-20 resize-none" placeholder="امروز یاد گرفتم..."></textarea>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="text-xs text-cyber-purple">بزرگ‌ترین چالشت چی بود؟</label>
+                            <button class="voice-btn text-cyber-purple hover:text-white transition-colors" data-target="log-challenge" title="صحبت کن">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                        </div>
+                        <textarea id="log-challenge" class="w-full bg-black/40 border border-cyber-border rounded-lg p-3 text-sm text-white focus:outline-none focus:border-cyber-purple transition-colors custom-scrollbar h-20 resize-none" placeholder="درگیر بودم با..."></textarea>
+                    </div>
+
+                    <button id="save-log-btn" class="w-full bg-cyber-neon/10 border border-cyber-neon text-cyber-neon py-2 rounded-lg font-orbitron text-sm hover:bg-cyber-neon hover:text-black transition-all">
+                        ذخیره لاگ
+                    </button>
+                    <div id="log-status" class="text-center text-xs text-cyber-success hidden">لاگ با موفقیت ذخیره شد.</div>
+                </div>
+            </section>
+
+        </aside>
+
+        <!-- ستون سمت چپ (برنامه روزانه و جدول) -->
+        <div class="lg:col-span-2 space-y-8">
+
+            <!-- 4. برنامه روزانه (Daily Schedule) -->
+            <section class="bg-cyber-panel border border-cyber-border rounded-xl p-6">
+                <div class="flex justify-between items-center mb-6 border-b border-cyber-border pb-2">
+                    <h2 class="font-orbitron text-lg text-white">برنامه روزانه</h2>
+                    <span id="schedule-date" class="text-xs text-cyber-neon border border-cyber-neon/30 px-2 py-1 rounded bg-cyber-neon/10">امروز</span>
+                </div>
+
+                <!-- تایم‌لاین -->
+                <div class="relative border-r-2 border-cyber-border pr-6 space-y-6">
+
+                    <div class="relative">
+                        <div class="absolute -right-[31px] top-1 w-4 h-4 rounded-full bg-cyber-bg border-2 border-cyber-neon shadow-[0_0_10px_rgba(0,243,255,0.5)]"></div>
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-white text-sm">بیدار شدن و روتین صبح</h3>
+                                <p class="text-xs text-cyber-muted mt-1">آب، مدیتیشن، شکرگزاری</p>
+                            </div>
+                            <span class="font-orbitron text-sm text-cyber-neon">06:00</span>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <div class="absolute -right-[31px] top-1 w-4 h-4 rounded-full bg-cyber-bg border-2 border-cyber-neon shadow-[0_0_10px_rgba(0,243,255,0.5)]"></div>
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-white text-sm">کار عمیق (هوش مصنوعی/کد)</h3>
+                                <p class="text-xs text-cyber-muted mt-1">بدون گوشی، تمرکز ۱۰۰٪</p>
+                            </div>
+                            <span class="font-orbitron text-sm text-cyber-neon">06:30</span>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <div class="absolute -right-[31px] top-1 w-4 h-4 rounded-full bg-cyber-bg border-2 border-cyber-border"></div>
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-white text-sm">انگلیسی و فریلنس</h3>
+                                <p class="text-xs text-cyber-muted mt-1">پروپوزال و ارتباطات</p>
+                            </div>
+                            <span class="font-orbitron text-sm text-cyber-muted">15:00</span>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <div class="absolute -right-[31px] top-1 w-4 h-4 rounded-full bg-cyber-bg border-2 border-cyber-border"></div>
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-white text-sm">تمرین و ریکاوری</h3>
+                                <p class="text-xs text-cyber-muted mt-1">۴۵ دقیقه تمرین خانگی</p>
+                            </div>
+                            <span class="font-orbitron text-sm text-cyber-muted">17:00</span>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <div class="absolute -right-[31px] top-1 w-4 h-4 rounded-full bg-cyber-bg border-2 border-cyber-purple shadow-[0_0_10px_rgba(188,19,254,0.5)]"></div>
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-white text-sm">خواب و شارژ مجدد</h3>
+                                <p class="text-xs text-cyber-muted mt-1">بدون گوشی. تاریکی کامل.</p>
+                            </div>
+                            <span class="font-orbitron text-sm text-cyber-purple">23:00</span>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- 5. جدول ردیابی ۶۰ روزه (Grid Tracker) -->
+            <section class="bg-cyber-panel border border-cyber-border rounded-xl overflow-hidden">
+                <div class="p-6 border-b border-cyber-border">
+                    <h2 class="font-orbitron text-lg text-white">ماتریس ردیابی</h2>
+                    <p class="text-xs text-cyber-muted mt-1">هر روز همه پروتکل‌ها را تیک بزن. زنجیره را نشکن.</p>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <div class="min-w-[800px]">
+                        <div class="grid grid-cols-[80px_repeat(11,1fr)] gap-2 p-4 border-b border-cyber-border bg-black/20 text-xs font-orbitron text-cyber-muted text-center sticky top-0">
+                            <div class="text-right">روز</div>
+                            <div>0</div><div>1</div><div>2</div><div>3</div><div>4</div>
+                            <div>5</div><div>6</div><div>7</div><div>8</div><div>9</div><div>10</div>
+                        </div>
+
+                        <div id="grid-body" class="p-4 space-y-2 max-h-[500px] overflow-y-auto custom-scrollbar">
+                            <!-- ردیف‌ها اینجا قرار می‌گیرند -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- فوتر -->
+    <footer class="border-t border-cyber-border mt-12 py-6 text-center text-xs text-cyber-muted">
+        <p>قدرت گرفته از <span class="text-cyber-neon font-orbitron">انضباط آهنین</span> &copy; ۲۰۲۶</p>
+    </footer>
+
+    <!-- Focus Mode Overlay -->
+    <div id="focus-overlay" class="fixed inset-0 bg-cyber-bg z-[100] hidden flex-col items-center justify-center">
+        <button id="exit-focus-btn" class="absolute top-8 right-8 text-cyber-muted hover:text-cyber-danger transition-colors">
+            <i class="fas fa-times text-3xl"></i>
+        </button>
+
+        <div class="flex gap-4 mb-8 z-10">
+            <button class="timer-mode-btn active-mode" data-time="90" data-label="کار عمیق">
+                کار عمیق (۹۰ دقیقه)
+            </button>
+            <button class="timer-mode-btn" data-time="50" data-label="یادگیری">
+                یادگیری (۵۰ دقیقه)
+            </button>
+            <button class="timer-mode-btn" data-time="25" data-label="اداری">
+                اداری (۲۵ دقیقه)
+            </button>
+        </div>
+
+        <div class="relative w-72 h-72 flex items-center justify-center">
+            <svg class="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="#2a2a35" stroke-width="2" />
+                <circle id="timer-progress" cx="50" cy="50" r="45" fill="none" stroke="#00f3ff" stroke-width="4" stroke-dasharray="283" stroke-dashoffset="0" class="transition-all duration-1000 ease-linear drop-shadow-[0_0_10px_rgba(0,243,255,0.8)]" />
+            </svg>
+            <div class="text-center z-10">
+                <div id="timer-display" class="font-orbitron text-6xl font-bold text-white tracking-widest">25:00</div>
+                <div id="timer-status" class="text-cyber-neon mt-2 font-vazir tracking-widest">تمرکز</div>
+            </div>
+        </div>
+
+        <div class="mt-12 flex gap-6">
+            <button id="start-timer-btn" class="bg-cyber-neon/10 border border-cyber-neon text-cyber-neon px-8 py-3 rounded-lg font-orbitron hover:bg-cyber-neon hover:text-black transition-all">
+                شروع
+            </button>
+            <button id="reset-timer-btn" class="bg-cyber-panel border border-cyber-border text-white px-6 py-3 rounded-lg font-orbitron hover:border-white transition-all">
+                ریست
+            </button>
+        </div>
+        <p class="mt-6 text-cyber-muted text-sm">در منطقه بمان. بدون حواس‌پرتی.</p>
+    </div>
+
+    <!-- Failure & Recovery Modal -->
+    <div id="fail-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center">
+        <div class="bg-cyber-panel border border-cyber-danger rounded-xl p-8 max-w-md w-full mx-4 relative shadow-[0_0_30px_rgba(255,51,51,0.2)]">
+            <div class="text-center mb-6">
+                <i class="fas fa-heart-broken text-cyber-danger text-5xl mb-4 drop-shadow-[0_0_10px_rgba(255,51,51,0.5)]"></i>
+                <h2 class="font-orbitron text-2xl text-white">شکست سیستم</h2>
+                <p class="text-cyber-muted text-sm mt-2">زنجیره را شکستی. بپذیر، تحلیل کن و دوباره بساز.</p>
+            </div>
+
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-xs text-cyber-danger mb-1">چرا شکست خوردی؟ (بی‌رحمانه صادق باش)</label>
+                    <textarea id="fail-reason" class="w-full bg-black/40 border border-cyber-border rounded-lg p-3 text-sm text-white focus:outline-none focus:border-cyber-danger transition-colors h-24 resize-none custom-scrollbar" placeholder="خسته بودم / تمرکزمو از دست دادم / تسلیم وسوسه شدم..."></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs text-cyber-neon mb-1">جریمه‌ات برای فردا چیه؟</label>
+                    <select id="fail-penalty" class="w-full bg-black/40 border border-cyber-border rounded-lg p-3 text-sm text-white focus:outline-none focus:border-cyber-neon">
+                        <option value="extra-hour">+۱ ساعت کار عمیق</option>
+                        <option value="extra-workout">+۳۰ دقیقه تمرین اضافه</option>
+                        <option value="no-entertainment">۰ سرگرمی برای ۲۴ ساعت</option>
+                        <option value="wake-early">۱ ساعت زودتر بیدار شو</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex gap-4">
+                <button id="cancel-fail-btn" class="w-1/2 bg-transparent border border-cyber-border text-white py-2 rounded-lg font-orbitron text-sm hover:border-white transition-all">لغو</button>
+                <button id="confirm-fail-btn" class="w-1/2 bg-cyber-danger/10 border border-cyber-danger text-cyber-danger py-2 rounded-lg font-orbitron text-sm hover:bg-cyber-danger hover:text-white transition-all">ریست استریک</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Medal Detail Modal -->
+<div id="medal-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center">
+    <div class="bg-cyber-panel border border-cyber-neon rounded-xl p-8 max-w-md w-full mx-4 relative shadow-[0_0_30px_rgba(0,243,255,0.2)]">
+        <button id="close-medal-btn" class="absolute top-4 left-4 text-cyber-muted hover:text-white transition-colors">
+            <i class="fas fa-times text-xl"></i>
+        </button>
+
+        <!-- آیکون مدال -->
+        <div class="text-center mb-6">
+            <div id="medal-modal-icon" class="w-24 h-24 mx-auto rounded-full flex items-center justify-center text-4xl mb-4 border-2">
+                <i class="fas fa-fire"></i>
+            </div>
+            <h2 id="medal-modal-title" class="font-orbitron text-2xl text-white">هفته ۱: جرقه</h2>
+            <p id="medal-modal-status" class="text-sm mt-2">قفل</p>
+        </div>
+
+        <!-- توضیح -->
+        <div id="medal-modal-description" class="text-cyber-muted text-sm leading-relaxed mb-6 text-center">
+            توضیح مدال...
+        </div>
+
+        <!-- پیشرفت (اگه قفل بود) -->
+        <div id="medal-modal-progress-section" class="mb-6">
+            <div class="flex justify-between text-xs mb-1">
+                <span class="text-cyber-muted">پیشرفت تا باز شدن</span>
+                <span id="medal-modal-progress-text" class="text-cyber-neon font-bold">0 / 7 روز</span>
+            </div>
+            <div class="w-full bg-gray-800 rounded-full h-2">
+                <div id="medal-modal-progress-bar" class="bg-cyber-neon h-2 rounded-full shadow-[0_0_10px_rgba(0,243,255,0.8)]" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- دکمه بستن -->
+        <button id="medal-modal-dismiss" class="w-full bg-cyber-neon/10 border border-cyber-neon text-cyber-neon py-2 rounded-lg font-orbitron text-sm hover:bg-cyber-neon hover:text-black transition-all">
+            متوجه شدم
+        </button>
+    </div>
+</div>
+
+    <!-- فایل جاوااسکریپت -->
+    <script src="./app.js"></script>
+
+</body>
+</html>

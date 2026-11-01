@@ -1,0 +1,521 @@
+/* =========================================
+   1. تنظیمات پایه و فونت‌ها
+   ========================================= */
+/* فونت‌ها در HTML با <link> لود می‌شن — @import حذف شد */
+
+:root {
+    --cyber-bg: #0a0a0c;
+    --cyber-panel: #121218;
+    --cyber-border: #2a2a35;
+    --cyber-neon: #00f3ff;
+    --cyber-purple: #bc13fe;
+    --cyber-success: #00ff66;
+    --cyber-danger: #ff3333;
+    --cyber-muted: #666;
+}
+
+body {
+    background-color: var(--cyber-bg);
+    color: #e0e0e0;
+    font-family: 'Vazirmatn', sans-serif;
+    background-image:
+        linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+    background-attachment: fixed;
+}
+
+/* اعداد و تیترها با فونت Estedad */
+.font-orbitron {
+    font-family: 'Estedad', 'Vazirmatn', sans-serif !important;
+}
+
+/* =========================================
+   2. اسکرول‌بار سفارشی (Cyberpunk Scrollbar)
+   ========================================= */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: var(--cyber-bg);
+    border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--cyber-border);
+    border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--cyber-neon);
+    box-shadow: 0 0 10px var(--cyber-neon);
+}
+
+/* =========================================
+   3. استایل ردیف‌های جدول (Matrix Tracker)
+   ========================================= */
+.day-row {
+    display: grid;
+    grid-template-columns: 80px repeat(11, 1fr);
+    gap: 8px;
+    align-items: center;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.day-row:hover {
+    background-color: rgba(0, 243, 255, 0.03);
+    border-color: rgba(0, 243, 255, 0.1);
+}
+
+.day-row.active-day {
+    background-color: rgba(0, 243, 255, 0.05);
+    border-right: 3px solid var(--cyber-neon);
+    box-shadow: inset 0 0 15px rgba(0, 243, 255, 0.05);
+}
+
+/* روزهای قفل‌شده (آینده) */
+.day-row.locked-row {
+    opacity: 0.35;
+    pointer-events: none;
+}
+
+.day-number {
+    font-family: 'Estedad', 'Vazirmatn', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+}
+
+.day-number span {
+    font-family: 'Vazirmatn', sans-serif;
+    font-size: 0.65rem;
+    color: var(--cyber-purple);
+    font-weight: 300;
+}
+
+/* =========================================
+   4. دکمه‌های چک‌باکس (Holographic Checkboxes)
+   ========================================= */
+.check-box {
+    width: 100%;
+    aspect-ratio: 1;
+    border: 1px solid var(--cyber-border);
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.check-box::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--cyber-border);
+    transition: all 0.2s ease;
+}
+
+.check-box:hover {
+    border-color: var(--cyber-neon);
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+}
+
+.check-box.checked {
+    background: rgba(0, 243, 255, 0.1);
+    border-color: var(--cyber-neon);
+    box-shadow: inset 0 0 10px rgba(0, 243, 255, 0.3), 0 0 10px rgba(0, 243, 255, 0.2);
+}
+
+.check-box.checked::before {
+    background: var(--cyber-neon);
+    box-shadow: 0 0 10px var(--cyber-neon);
+    width: 10px;
+    height: 10px;
+}
+
+.check-box.disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+
+.check-box.disabled:hover {
+    border-color: var(--cyber-border);
+    box-shadow: none;
+}
+
+/* =========================================
+   5. افکت‌های ویژه (Animations & Glows)
+   ========================================= */
+@keyframes pulse-glow {
+    0%   { box-shadow: 0 0 5px rgba(0, 243, 255, 0.5); }
+    50%  { box-shadow: 0 0 20px rgba(0, 243, 255, 0.8); }
+    100% { box-shadow: 0 0 5px rgba(0, 243, 255, 0.5); }
+}
+
+.neon-glow {
+    animation: pulse-glow 2s infinite;
+}
+
+/* =========================================
+   6. استایل‌های اختصاصی (Overrides)
+   ========================================= */
+section {
+    position: relative;
+}
+
+section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow: inset 0 0 20px rgba(0, 243, 255, 0.02);
+}
+
+canvas {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.chart-container {
+    position: relative;
+    margin: auto;
+    height: 100%;
+    width: 100%;
+}
+
+/* =========================================
+   7. استایل مدال‌ها (Trophy Case & Medals)
+   ========================================= */
+.medal-box {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    cursor: help;
+}
+
+.medal-box.locked {
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px dashed var(--cyber-border);
+    color: var(--cyber-border);
+    opacity: 0.5;
+}
+
+.medal-box.unlocked {
+    background: radial-gradient(circle, rgba(0, 243, 255, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+    border: 2px solid var(--cyber-neon);
+    color: var(--cyber-neon);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.4), inset 0 0 10px rgba(0, 243, 255, 0.2);
+    text-shadow: 0 0 10px var(--cyber-neon);
+    animation: medal-pop 0.5s ease-out, pulse-glow 2s infinite;
+}
+
+@keyframes medal-pop {
+    0%   { transform: scale(0.5); opacity: 0; }
+    80%  { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.medal-box.unlocked:hover {
+    transform: scale(1.15) rotate(5deg);
+    box-shadow: 0 0 25px rgba(0, 243, 255, 0.8);
+}
+
+#medal-1.unlocked { border-color: #ff3333; color: #ff3333; box-shadow: 0 0 15px rgba(255, 51, 51, 0.5); }
+#medal-2.unlocked { border-color: #00f3ff; color: #00f3ff; }
+#medal-3.unlocked { border-color: #bc13fe; color: #bc13fe; box-shadow: 0 0 15px rgba(188, 19, 254, 0.5); }
+#medal-4.unlocked { border-color: #00ff66; color: #00ff66; box-shadow: 0 0 15px rgba(0, 255, 102, 0.5); }
+#medal-5.unlocked { border-color: #ffd700; color: #ffd700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
+#medal-6.unlocked { border-color: #ff00ff; color: #ff00ff; box-shadow: 0 0 15px rgba(255, 0, 255, 0.5); }
+#medal-7.unlocked { border-color: #ff8c00; color: #ff8c00; box-shadow: 0 0 15px rgba(255, 140, 0, 0.5); }
+#medal-8.unlocked { border-color: #ffffff; color: #ffffff; box-shadow: 0 0 20px rgba(255, 255, 255, 0.8); }
+
+/* =========================================
+   8. استایل مود تمرکز (Focus Mode)
+   ========================================= */
+#focus-overlay {
+    background-color: rgba(10, 10, 12, 0.98);
+    backdrop-filter: blur(10px);
+}
+
+#focus-overlay.active {
+    display: flex !important;
+}
+
+@keyframes button-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(0, 243, 255, 0.4); }
+    70%  { box-shadow: 0 0 0 10px rgba(0, 243, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 243, 255, 0); }
+}
+
+#start-timer-btn:not(.running) {
+    animation: button-pulse 2s infinite;
+}
+
+/* =========================================
+   9. استایل ردیاب درآمد (Income Tracker)
+   ========================================= */
+#income-input::-webkit-outer-spin-button,
+#income-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+@keyframes cash-flash {
+    0%   { color: #fff; text-shadow: 0 0 20px #00ff66; }
+    100% { color: var(--cyber-success); text-shadow: none; }
+}
+
+.income-flash {
+    animation: cash-flash 1s ease-out;
+}
+
+#notification-btn.active {
+    color: var(--cyber-success) !important;
+    border-color: var(--cyber-success) !important;
+    box-shadow: 0 0 10px rgba(0, 255, 102, 0.3);
+}
+
+/* =========================================
+   10. استایل مودال شکست (Failure Modal)
+   ========================================= */
+#fail-modal.active {
+    display: flex !important;
+}
+
+/* =========================================
+   11. استایل تایمر چندکاره (Multi-Timer Modes)
+   ========================================= */
+.timer-mode-btn {
+    background: transparent;
+    border: 1px solid var(--cyber-border);
+    color: var(--cyber-muted);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-family: 'Estedad', 'Vazirmatn', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.timer-mode-btn:hover {
+    border-color: var(--cyber-neon);
+    color: var(--cyber-neon);
+}
+
+.timer-mode-btn.active-mode {
+    background: rgba(0, 243, 255, 0.1);
+    border-color: var(--cyber-neon);
+    color: var(--cyber-neon);
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+}
+
+/* =========================================
+   12. استایل دستیار صوتی (Voice Journaling)
+   ========================================= */
+.voice-btn {
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.voice-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.voice-btn.recording {
+    color: var(--cyber-danger) !important;
+    animation: pulse-recording 1.5s infinite;
+}
+
+@keyframes pulse-recording {
+    0%   { transform: scale(1); text-shadow: 0 0 0 rgba(255, 51, 51, 0.7); }
+    50%  { transform: scale(1.2); text-shadow: 0 0 15px rgba(255, 51, 51, 1); }
+    100% { transform: scale(1); text-shadow: 0 0 0 rgba(255, 51, 51, 0); }
+}
+
+/* =========================================
+   13. استایل زنجیره عادت (Habit Stacking)
+   ========================================= */
+.stack-item {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--cyber-border);
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+}
+
+.stack-item.completed {
+    border-color: var(--cyber-success);
+    background: rgba(0, 255, 102, 0.05);
+    opacity: 0.7;
+}
+
+.stack-item.completed .stack-text {
+    text-decoration: line-through;
+    color: var(--cyber-muted);
+}
+
+/* =========================================
+   14. Focus Mode - مودال ریسپانسیو
+   ========================================= */
+@media (max-width: 480px) {
+    #focus-overlay .w-72 { width: 220px !important; height: 220px !important; }
+    #timer-display { font-size: 3rem !important; }
+    .timer-mode-btn { font-size: 0.65rem; padding: 0.4rem 0.6rem; }
+}
+
+/* =========================================
+   15. استایل‌های ریسپانسیو پایه
+   ========================================= */
+@media (max-width: 768px) {
+    /* هدر */
+    header .container { padding-left: 12px; padding-right: 12px; }
+    header h1 { font-size: 1rem !important; letter-spacing: 0.1em !important; }
+    header .text-3xl { font-size: 1.5rem !important; }
+    header .gap-6 { gap: 0.5rem !important; }
+    header .pr-6 { padding-right: 0.5rem !important; }
+    header button { padding: 0.4rem !important; }
+
+    /* مودال شکست */
+    #fail-modal > div { padding: 1.5rem !important; }
+    #fail-modal h2 { font-size: 1.3rem !important; }
+
+    /* جدول ماتریس: کوچک‌تر */
+    .day-row { grid-template-columns: 60px repeat(11, 1fr); gap: 4px; padding: 6px; }
+    .day-number { font-size: 0.75rem; }
+
+    /* بخش‌های اصلی */
+    main { padding: 1rem !important; gap: 1.5rem !important; }
+    section { padding: 1rem !important; }
+
+    /* نمودارها */
+    #radarChart { max-height: 180px !important; }
+    #barChart { max-height: 140px !important; }
+}
+
+@media (max-width: 480px) {
+    header h1 { font-size: 0.85rem !important; }
+    header .text-xs { font-size: 0.6rem !important; }
+    header button { padding: 0.35rem !important; font-size: 0.85rem; }
+    .day-row { grid-template-columns: 50px repeat(11, 1fr); gap: 3px; padding: 4px; }
+    .day-number { font-size: 0.65rem; }
+    .medal-box { font-size: 1rem; }
+}
+
+/* روز قفل‌شده (گذشته‌ی دور یا آینده) */
+.day-row.locked-day {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.day-row.locked-day .check-box {
+    cursor: not-allowed;
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(0, 0, 0, 0.3),
+        rgba(0, 0, 0, 0.3) 4px,
+        rgba(255, 51, 51, 0.05) 4px,
+        rgba(255, 51, 51, 0.05) 8px
+    );
+}
+
+/* =========================================
+   16. روزهای قفل‌شده (گذشته‌ی دور و آینده)
+   ========================================= */
+.day-row.locked-day {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.day-row.locked-day .check-box {
+    cursor: not-allowed;
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(0, 0, 0, 0.3),
+        rgba(0, 0, 0, 0.3) 4px,
+        rgba(255, 51, 51, 0.05) 4px,
+        rgba(255, 51, 51, 0.05) 8px
+    );
+}
+
+/* دیروز: قابل ویرایش ولی متمایز */
+.day-row[data-yesterday="true"] {
+    border-right: 3px solid #ff8c00;
+}
+
+/* افکت موجی روی چک‌باکس */
+.check-box.checked {
+    animation: checkPop 0.3s ease-out;
+}
+
+@keyframes checkPop {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.15); }
+    100% { transform: scale(1); }
+}
+
+/* =========================================
+   17. Medal Modal
+   ========================================= */
+#medal-modal.active {
+    display: flex !important;
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+#medal-modal > div {
+    animation: modalScaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes modalScaleIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+}
+
+/* مدال‌ها hover بهتر */
+.medal-box {
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.medal-box:hover {
+    transform: scale(1.1);
+}
+
+.medal-box.locked:hover {
+    opacity: 0.8;
+    border-color: var(--cyber-neon);
+    color: var(--cyber-neon);
+}

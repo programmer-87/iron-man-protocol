@@ -1,0 +1,350 @@
+/* =========================================
+   responsive.css — The Iron Man Protocol
+   ریسپانسیو کامل برای موبایل و تبلت
+   این فایل باید بعد از style.css لود بشه
+   ========================================= */
+
+/* =========================================
+   1. TABLET: 768px – 1024px
+   ========================================= */
+@media (max-width: 1024px) {
+    main {
+        gap: 1.5rem !important;
+    }
+
+    /* جدول ماتریس: کمی کوچک‌تر */
+    .day-row {
+        grid-template-columns: 70px repeat(11, 1fr);
+        gap: 6px;
+    }
+
+    /* فوتر پایین */
+    footer {
+        padding: 1rem !important;
+    }
+}
+
+/* =========================================
+   2. MOBILE: max-width 768px
+   ========================================= */
+@media (max-width: 768px) {
+
+    /* ---------- هدر ---------- */
+    header {
+        position: sticky;
+        top: 0;
+    }
+
+    header .container {
+        padding: 0.6rem 0.75rem !important;
+        flex-wrap: nowrap;
+    }
+
+    /* بخش راست هدر: لوگو + عنوان */
+    header .flex.items-center.gap-4 {
+        gap: 0.5rem !important;
+    }
+
+    header .fa-shield-alt {
+        font-size: 1.5rem !important;
+    }
+
+    header h1 {
+        font-size: 1rem !important;
+        letter-spacing: 0.05em !important;
+    }
+
+    header p {
+        font-size: 0.65rem !important;
+    }
+
+    /* بخش چپ هدر: Day + Streak + دکمه‌ها */
+    header .flex.items-center.gap-6 {
+        gap: 0.4rem !important;
+    }
+
+    /* Day و Streak کوچک‌تر */
+    header .text-center span:first-child {
+        font-size: 0.6rem !important;
+    }
+
+    header #header-current-day,
+    header #header-streak {
+        font-size: 0.9rem !important;
+    }
+
+    /* دکمه‌های هدر کوچک‌تر */
+    header button {
+        padding: 0.35rem !important;
+        font-size: 0.85rem !important;
+    }
+
+        /* دکمه‌های جدید در موبایل: کوچک‌تر */
+    #export-btn,
+    #import-btn {
+        padding: 0.35rem !important;
+        font-size: 0.85rem !important;
+    }
+
+    /* مخفی کردن متن‌های بلند در هدر */
+    header .text-xs {
+        white-space: nowrap;
+    }
+
+    /* ---------- Layout اصلی ---------- */
+    main {
+        grid-template-columns: 1fr !important;
+        padding: 1rem 0.75rem !important;
+        gap: 1rem !important;
+    }
+
+    /* ---------- کارت‌ها ---------- */
+    section {
+        padding: 1rem !important;
+        border-radius: 0.6rem !important;
+    }
+
+    section h2 {
+        font-size: 0.95rem !important;
+        padding-bottom: 0.5rem !important;
+        margin-bottom: 0.8rem !important;
+    }
+
+    /* ---------- جدول ماتریس در موبایل ---------- */
+    /* روش: مخفی کردن هدر ۱۱ ستونی، تبدیل به اسکرول افقی نرم */
+    #grid-body {
+        max-height: 400px;
+    }
+
+    .day-row {
+        grid-template-columns: 50px repeat(11, 1fr);
+        gap: 3px;
+        padding: 5px;
+    }
+
+    .day-number {
+        font-size: 0.7rem;
+    }
+
+    .day-number span {
+        font-size: 0.55rem;
+    }
+
+    /* عنوان ستون‌ها در موبایل مخفی */
+    .min-w-\[800px\] {
+        min-width: 100% !important;
+    }
+
+    /* هدر جدول (ستون‌های 0-10) */
+    .grid-cols-\[80px_repeat\(11\,1fr\)\] {
+        grid-template-columns: 50px repeat(11, 1fr) !important;
+        font-size: 0.6rem;
+    }
+
+    /* اسکرول افقی برای هدر و بدنه هم‌زمان */
+    .overflow-x-auto {
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* ---------- نمودارها ---------- */
+    #radarChart {
+        max-height: 200px !important;
+    }
+
+    #barChart {
+        max-height: 130px !important;
+    }
+
+    .h-48 {
+        height: 11rem !important;
+    }
+
+    .h-32 {
+        height: 7rem !important;
+    }
+
+    /* ---------- مدال‌ها ---------- */
+    .medal-box {
+        font-size: 1.1rem;
+    }
+
+    .grid-cols-4 {
+        gap: 0.4rem;
+    }
+
+    /* ---------- برنامه روزانه (Timeline) ---------- */
+    .border-r-2 {
+        padding-right: 1rem !important;
+    }
+
+    .space-y-6 > * + * {
+        margin-top: 1rem !important;
+    }
+
+    /* نقطه‌های تایم‌لاین */
+    .-right-\[31px\] {
+        right: -20px !important;
+        width: 12px !important;
+        height: 12px !important;
+    }
+
+    /* ---------- زنجیره عادت ---------- */
+    .stack-item {
+        padding: 8px;
+        font-size: 0.8rem;
+    }
+
+    /* ---------- دفترچه روزانه ---------- */
+    textarea {
+        font-size: 0.85rem !important;
+    }
+
+    /* ---------- Focus Mode ---------- */
+    #focus-overlay {
+        padding: 1rem;
+    }
+
+    #focus-overlay .flex.gap-4 {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .timer-mode-btn {
+        font-size: 0.65rem;
+        padding: 0.4rem 0.6rem;
+    }
+
+    /* دایره تایمر */
+    #focus-overlay .w-72 {
+        width: 200px !important;
+        height: 200px !important;
+    }
+
+    #timer-display {
+        font-size: 2.5rem !important;
+    }
+
+    #timer-status {
+        font-size: 0.75rem !important;
+    }
+
+    #exit-focus-btn {
+        top: 1rem !important;
+        right: 1rem !important;
+    }
+
+    #exit-focus-btn i {
+        font-size: 1.5rem !important;
+    }
+
+    /* دکمه‌های تایمر */
+    #focus-overlay .mt-12 {
+        margin-top: 1.5rem !important;
+        gap: 0.5rem !important;
+    }
+
+    #start-timer-btn,
+    #reset-timer-btn {
+        padding: 0.6rem 1.2rem !important;
+        font-size: 0.85rem !important;
+    }
+
+    /* ---------- مودال شکست ---------- */
+    #fail-modal > div {
+        padding: 1.25rem !important;
+        margin: 1rem !important;
+    }
+
+    #fail-modal h2 {
+        font-size: 1.2rem !important;
+    }
+
+    #fail-modal .text-5xl {
+        font-size: 2.5rem !important;
+    }
+
+    /* ---------- Toast ---------- */
+    .fixed.bottom-6 {
+        bottom: 1rem !important;
+        padding: 0.6rem 1rem !important;
+        font-size: 0.75rem !important;
+        max-width: 90vw;
+        text-align: center;
+    }
+
+    /* ---------- فوتر ---------- */
+    footer {
+        padding: 1rem !important;
+        font-size: 0.7rem !important;
+    }
+}
+
+/* =========================================
+   3. SMALL MOBILE: max-width 480px
+   ========================================= */
+@media (max-width: 480px) {
+
+    header h1 {
+        font-size: 0.8rem !important;
+    }
+
+    header p {
+        display: none; /* زیرعنوان در موبایل کوچک مخفی */
+    }
+
+    header .fa-shield-alt {
+        font-size: 1.2rem !important;
+    }
+
+    /* Day/Streak کوچک‌تر */
+    header #header-current-day,
+    header #header-streak {
+        font-size: 0.8rem !important;
+    }
+
+    header button {
+        padding: 0.3rem !important;
+        font-size: 0.75rem !important;
+    }
+
+    /* جدول */
+    .day-row {
+        grid-template-columns: 42px repeat(11, 1fr);
+        gap: 2px;
+    }
+
+    .day-number {
+        font-size: 0.6rem;
+    }
+
+    /* Focus Mode */
+    #focus-overlay .w-72 {
+        width: 170px !important;
+        height: 170px !important;
+    }
+
+    #timer-display {
+        font-size: 2rem !important;
+    }
+
+    .timer-mode-btn {
+        font-size: 0.55rem;
+        padding: 0.3rem 0.4rem;
+    }
+
+    /* مدال‌ها */
+    .medal-box {
+        font-size: 0.9rem;
+    }
+
+    /* نمودارها */
+    #radarChart {
+        max-height: 160px !important;
+    }
+
+    #barChart {
+        max-height: 110px !important;
+    }
+}

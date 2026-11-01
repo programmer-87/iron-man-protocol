@@ -1,0 +1,62 @@
+{
+  "name": "The Iron Man Protocol — پروتکل آیرون‌من",
+  "short_name": "IronMan",
+  "description": "چالش ۶۰ روزه انضباط شخصی — آیرون‌من درون خودت را بیدار کن.",
+  "lang": "fa",
+  "dir": "rtl",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0a0c",
+  "theme_color": "#0a0a0c",
+  "categories": ["productivity", "lifestyle", "health"],
+  "icons": [
+    {
+      "src": "./icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "حالت تمرکز",
+      "short_name": "تمرکز",
+      "description": "ورود مستقیم به تایمر پومودورو",
+      "url": "./index.html?action=focus",
+      "icons": [
+        {
+          "src": "./icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "ماتریس امروز",
+      "short_name": "امروز",
+      "description": "پرش مستقیم به جدول ردیابی",
+      "url": "./index.html?action=today",
+      "icons": [
+        {
+          "src": "./icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}
