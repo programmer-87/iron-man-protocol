@@ -1630,6 +1630,30 @@ function loadFocusStats() {
 // 25. Voice Commands
 // =========================================
 let commandRecognition = null;
+// =========================================
+// Text-to-Speech Engine
+// =========================================
+let speechEngine = window.speechSynthesis;
+let voiceEnabled = true; // آیا ربات جواب بده یا نه؟
+
+function speak(text) {
+    if (!voiceEnabled || !speechEngine) return;
+    
+    // قطع کردن صحبت قبلی
+    speechEngine.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'fa-IR';
+    utterance.rate = 1.0; // سرعت
+    utterance.pitch = 1.0; // زیر و بمی
+
+    // پیدا کردن یک صدای فارسی (اگه موجود باشه)
+    const voices = speechEngine.getVoices();
+    const faVoice = voices.find(v => v.lang.includes('fa') || v.lang.includes('IR'));
+    if (faVoice) utterance.voice = faVoice;
+
+    speechEngine.speak(utterance);
+}
 let isCommandListening = false;
 
 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
@@ -1708,10 +1732,13 @@ function processVoiceCommand(text) {
                 if (boxEl && !boxEl.classList.contains('checked')) {
                     toggleCheck(currentDayIndex, ruleIndex, boxEl);
                     showToast(`قانون ${ruleIndex} تیک زده شد.`, 'success');
+                    speak(`قانون ${ruleIndex} تیک خورد.`);
                 } else if (boxEl) {
                     showToast(`قانون ${ruleIndex} قبلاً تیک خورده.`, 'info');
+                    speak(`قانون ${ruleIndex} از قبل تیک خورده بود.`);
                 } else {
                     showToast('روز فعال پیدا نشد.', 'error');
+                    speak('روز فعالی پیدا نکردم.');
                 }
                 return;
             }
@@ -1720,7 +1747,12 @@ function processVoiceCommand(text) {
 
     // 2. حالت تمرکز
     if (normalized.includes('تمرکز') || normalized.includes('فوکوس')) {
-        if (!focusOverlay.classList.contains('active')) toggleFocusMode();
+        if (!focusOverlay.classList.contains('active')) {
+            toggleFocusMode();
+            speak('وارد حالت تمرکز شدیم. موفق باشی.');
+        } else {
+            speak('از قبل توی حالت تمرکز هستیم.');
+        }
         return;
     }
 
@@ -1728,6 +1760,9 @@ function processVoiceCommand(text) {
     if (normalized.includes('آمار') || normalized.includes('نمودار')) {
         if (document.getElementById('stats-modal').classList.contains('hidden')) {
             document.getElementById('stats-btn').click();
+            speak('آمارت رو باز کردم.');
+        } else {
+            speak('آمار از قبل بازه.');
         }
         return;
     }
@@ -1735,16 +1770,90 @@ function processVoiceCommand(text) {
     // 4. شکست
     if (normalized.includes('شکست') || normalized.includes('باختم')) {
         openFailModal();
+        speak('مودال شکست باز شد. صادق باش.');
         return;
     }
 
-    // 5. راهنما
+    // 5. چند روز مونده؟
+    if (normalized.includes('چند روز') || normalized.includes('باقی مونده')) {
+        const daysRemaining = TOTAL_DAYS - appData.currentDay + 1;
+        showToast(`${daysRemaining} روز مونده.`, 'info');
+        speak(`${daysRemaining} روز تا پایان چالش مونده.`);
+        return;
+    }
+
+    // 6. استریک
+    if (normalized.includes('استریک') || normalized.includes('زنجیره')) {
+        showToast(`استریک فعلی: ${appData.streak} روز`, 'info');
+        speak(`استریک فعلی تو ${appData.streak} روزه.`);
+        return;
+    }
+
+    // 7. ساعت چنده؟
+    if (normalized.includes('ساعت')) {
+        const now = new Date();
+        const timeStr = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+        showToast(`ساعت ${timeStr}`, 'info');
+        speak(`الان ساعت ${timeStr} است.`);
+        return;
+    }
+
+    // 8. ثبت درآمد
+    if (normalized.includes('درآمد')) {
+        const match = normalized.match(/(\d+)/);
+        if (match) {
+            let amount = parseInt(match[1]);
+            // اگه کاربر گفت "هزار"، عدد رو ضربدر ۱۰۰۰ کن
+            if (normalized.includes('هزار')) amount *= 1000;
+            if (normalized.includes('میلیون')) amount *= 1000000;
+
+            if (amount > 0) {
+                totalIncome += amount;
+                monthlyIncome += amount;
+                incomeHistory.unshift({
+                    amount: amount,
+                    date: new Date().toLocaleDateString('fa-IR'),
+                    day: appData.currentDay
+                });
+                saveIncomeData();
+                renderIncome();
+                showToast(`درآمد ${amount.toLocaleString()} تومان ثبت شد.`, 'success');
+                speak(`${amount.toLocaleString()} تومان درآمد ثبت شد.`);
+                return;
+            }
+        } else {
+            showToast('مبلغ درآمد رو متوجه نشدم.', 'error');
+            speak('مبلغ درآمد رو متوجه نشدم. لطفاً عدد رو واضح بگو.');
+            return;
+        }
+    }
+
+    // 9. خاموش کردن صدا
+    if (normalized.includes('ساکت') || normalized.includes('خفه شو') || normalized.includes('صدا رو خاموش کن')) {
+        voiceEnabled = false;
+        speechEngine.cancel();
+        showToast('صدای دستیار خاموش شد. برای روشن شدن بگو "صدا رو روشن کن".', 'info');
+        return;
+    }
+
+    // 10. روشن کردن صدا
+    if (normalized.includes('صدا رو روشن کن') || normalized.includes('حرف بزن')) {
+        voiceEnabled = true;
+        showToast('صدای دستیار روشن شد.', 'success');
+        speak('صدای من دوباره روشن شد.');
+        return;
+    }
+
+    // 11. راهنما
     if (normalized.includes('راهنما') || normalized.includes('کمک')) {
         openVoiceHelp();
+        speak('لیست دستورات رو برات باز کردم.');
         return;
     }
 
+    // اگر هیچ‌کدوم نبود
     showToast('دستور رو متوجه نشدم. راهنما رو ببین.', 'error');
+    speak('دستور رو متوجه نشدم. راهنما رو باز کردم.');
     openVoiceHelp();
 }
 

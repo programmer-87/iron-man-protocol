@@ -6,7 +6,7 @@
    - آفلاین fallback
    ========================================= */
 
-const CACHE_VERSION = 'v1.0.2';
+const CACHE_VERSION = 'v1.0.6';
 const CACHE_STATIC = `ironman-static-${CACHE_VERSION}`;
 const CACHE_DYNAMIC = `ironman-dynamic-${CACHE_VERSION}`;
 
