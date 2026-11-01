@@ -7,6 +7,8 @@ const TOTAL_HABITS = 11;
 let radarChartInstance = null;
 let barChartInstance = null;
 let streakChartInstance = null;
+let bigChartInstance = null;
+let currentFilter = 'all';
 
 // =========================================
 // Medal Modal Variables
@@ -259,10 +261,17 @@ function renderGrid() {
     gridBody.innerHTML = '';
 
     for (let i = 0; i < TOTAL_DAYS; i++) {
+        const dayNum = i + 1;
+        const dayChecks = appData.checks[i].filter(v => v).length;
+        
+        // اعمال فیلتر
+        if (currentFilter === 'today' && dayNum !== appData.currentDay) continue;
+        if (currentFilter === 'incomplete' && (dayNum > appData.currentDay || dayChecks === TOTAL_HABITS)) continue;
+
         const row = document.createElement('div');
         row.className = 'day-row';
 
-        const dayNum = i + 1;
+
         const isFuture = dayNum > appData.currentDay;
         const isOld = dayNum < appData.currentDay - 1;
 
@@ -320,6 +329,7 @@ function toggleCheck(dayIndex, habitIndex, boxElement) {
 
     saveData();
     updateStats();
+        if (currentFilter === 'incomplete') renderGrid();
     loadDailyLog();
 }
 
@@ -477,6 +487,43 @@ function initApp() {
         });
     }
 
+        // فیلترهای جدول
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.classList.remove('active-mode', 'text-cyber-neon', 'bg-cyber-neon/10', 'border-cyber-neon');
+                b.classList.add('text-cyber-muted', 'border-cyber-border');
+            });
+            e.target.classList.remove('text-cyber-muted', 'border-cyber-border');
+            e.target.classList.add('active-mode', 'text-cyber-neon', 'bg-cyber-neon/10', 'border-cyber-neon');
+            
+            currentFilter = e.target.dataset.filter;
+            renderGrid();
+        });
+    });
+
+    // مودال آمار
+    const statsBtn = document.getElementById('stats-btn');
+    const statsModal = document.getElementById('stats-modal');
+    const closeStatsBtn = document.getElementById('close-stats-btn');
+
+    if (statsBtn) {
+        statsBtn.addEventListener('click', () => {
+            statsModal.classList.remove('hidden');
+            statsModal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+            updateStatsModal();
+        });
+    }
+
+    if (closeStatsBtn) {
+        closeStatsBtn.addEventListener('click', () => {
+            statsModal.classList.add('hidden');
+            statsModal.classList.remove('flex');
+            document.body.style.overflow = 'auto';
+        });
+    }
+
     if (addIncomeBtn) {
         addIncomeBtn.addEventListener('click', addIncome);
         incomeInput.addEventListener('keypress', (e) => {
@@ -523,6 +570,11 @@ function initApp() {
             closeMedalModal();
             if (failModal && failModal.classList.contains('active')) closeFailModal();
             if (focusOverlay && focusOverlay.classList.contains('active')) toggleFocusMode();
+            if (document.getElementById('stats-modal').classList.contains('flex')) {
+                document.getElementById('stats-modal').classList.add('hidden');
+                document.getElementById('stats-modal').classList.remove('flex');
+                document.body.style.overflow = 'auto';
+            }
         }
     });
 }
@@ -1384,4 +1436,69 @@ function closeMedalModal() {
     modal.classList.remove('active');
     modal.style.display = 'none';
     document.body.style.overflow = 'auto';
+}
+
+// =========================================
+// 23. Full Stats Modal Logic
+// =========================================
+function updateStatsModal() {
+    let totalChecks = 0;
+    let bestStreak = 0;
+    let currentStreak = 0;
+    let activeDays = 0;
+
+    // محاسبه داده‌ها
+    for (let i = 0; i < TOTAL_DAYS; i++) {
+        const dayChecks = appData.checks[i].filter(v => v).length;
+        totalChecks += dayChecks;
+
+        if (dayChecks > 0) activeDays++;
+
+        if (dayChecks === TOTAL_HABITS) {
+            currentStreak++;
+            if (currentStreak > bestStreak) bestStreak = currentStreak;
+        } else {
+            currentStreak = 0;
+        }
+    }
+
+    const avgChecks = activeDays > 0 ? (totalChecks / activeDays).toFixed(1) : 0;
+    const fails = JSON.parse(localStorage.getItem('ironManFailures')) || [];
+
+    // آپدیت DOM
+    document.getElementById('stats-best-streak').innerText = bestStreak;
+    document.getElementById('stats-total-checks').innerText = totalChecks;
+    document.getElementById('stats-avg-checks').innerText = avgChecks;
+    document.getElementById('stats-total-fails').innerText = fails.length;
+
+    // رسم نمودار بزرگ
+    if (bigChartInstance) bigChartInstance.destroy();
+    
+    const ctxBig = document.getElementById('bigChart').getContext('2d');
+    const labels = Array.from({length: TOTAL_DAYS}, (_, i) => `D${i+1}`);
+    const data = appData.checks.map(day => day.filter(v => v).length);
+
+    bigChartInstance = new Chart(ctxBig, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'تیک‌های روزانه',
+                data: data,
+                backgroundColor: data.map(v => v === TOTAL_HABITS ? 'rgba(0, 255, 102, 0.6)' : 'rgba(0, 243, 255, 0.4)'),
+                borderColor: data.map(v => v === TOTAL_HABITS ? '#00ff66' : '#00f3ff'),
+                borderWidth: 1,
+                borderRadius: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { beginAtZero: true, max: TOTAL_HABITS, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+                x: { grid: { display: false }, ticks: { font: { size: 9 } } }
+            },
+            plugins: { legend: { display: false } }
+        }
+    });
 }

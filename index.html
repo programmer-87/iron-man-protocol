@@ -98,6 +98,9 @@
                 <button id="import-btn" class="text-cyber-neon hover:text-white transition-colors duration-300 p-2 border border-cyber-border rounded-lg hover:border-cyber-neon" title="بازیابی از بکاپ">
                     <i class="fas fa-upload"></i>
                 </button>
+                <button id="stats-btn" class="text-cyber-purple hover:text-white transition-colors duration-300 p-2 border border-cyber-border rounded-lg hover:border-cyber-purple" title="آمار کامل">
+                    <i class="fas fa-chart-pie"></i>
+                </button>
                 <input type="file" id="import-file" accept=".json,.csv" style="display: none;">
             </div>
         </div>
@@ -404,6 +407,11 @@
                 <div class="p-6 border-b border-cyber-border">
                     <h2 class="font-orbitron text-lg text-white">ماتریس ردیابی</h2>
                     <p class="text-xs text-cyber-muted mt-1">هر روز همه پروتکل‌ها را تیک بزن. زنجیره را نشکن.</p>
+                    <div class="flex gap-2 mt-4" id="matrix-filters">
+                        <button class="filter-btn active-mode text-xs border border-cyber-neon text-cyber-neon bg-cyber-neon/10 px-3 py-1 rounded" data-filter="all">همه روزها</button>
+                        <button class="filter-btn text-xs border border-cyber-border text-cyber-muted hover:border-cyber-neon px-3 py-1 rounded transition-colors" data-filter="today">امروز</button>
+                        <button class="filter-btn text-xs border border-cyber-border text-cyber-muted hover:border-cyber-neon px-3 py-1 rounded transition-colors" data-filter="incomplete">ناقص‌ها</button>
+                    </div>
                 </div>
 
                 <div class="overflow-x-auto">
@@ -537,6 +545,59 @@
         <button id="medal-modal-dismiss" class="w-full bg-cyber-neon/10 border border-cyber-neon text-cyber-neon py-2 rounded-lg font-orbitron text-sm hover:bg-cyber-neon hover:text-black transition-all">
             متوجه شدم
         </button>
+    </div>
+</div>
+
+<!-- Full Screen Stats Modal -->
+<div id="stats-modal" class="fixed inset-0 bg-cyber-bg/98 backdrop-blur-md z-[150] hidden flex-col overflow-y-auto custom-scrollbar">
+    
+    <!-- هدر مودال -->
+    <div class="sticky top-0 bg-cyber-bg/90 backdrop-blur-md border-b border-cyber-border p-4 flex justify-between items-center z-10">
+        <h2 class="font-orbitron text-xl text-cyber-purple drop-shadow-[0_0_10px_rgba(188,19,254,0.5)]">مرکز آمار و تحلیل</h2>
+        <button id="close-stats-btn" class="text-cyber-muted hover:text-white transition-colors p-2">
+            <i class="fas fa-times text-2xl"></i>
+        </button>
+    </div>
+
+    <!-- محتوای مودال -->
+    <div class="container mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- کارت ۱: بهترین استریک -->
+        <div class="bg-cyber-panel border border-cyber-border rounded-xl p-6 text-center relative overflow-hidden group">
+            <i class="fas fa-fire text-cyber-danger text-3xl mb-3 drop-shadow-[0_0_10px_rgba(255,51,51,0.5)]"></i>
+            <h3 class="text-xs text-cyber-muted uppercase tracking-widest mb-1">بهترین استریک</h3>
+            <div class="font-orbitron text-3xl text-white"><span id="stats-best-streak">0</span> <span class="text-sm">روز</span></div>
+        </div>
+
+        <!-- کارت ۲: کل تیک‌ها -->
+        <div class="bg-cyber-panel border border-cyber-border rounded-xl p-6 text-center relative overflow-hidden group">
+            <i class="fas fa-check-double text-cyber-neon text-3xl mb-3 drop-shadow-[0_0_10px_rgba(0,243,255,0.5)]"></i>
+            <h3 class="text-xs text-cyber-muted uppercase tracking-widest mb-1">کل تیک‌های زده شده</h3>
+            <div class="font-orbitron text-3xl text-white"><span id="stats-total-checks">0</span></div>
+        </div>
+
+        <!-- کارت ۳: میانگین روزانه -->
+        <div class="bg-cyber-panel border border-cyber-border rounded-xl p-6 text-center relative overflow-hidden group">
+            <i class="fas fa-chart-line text-cyber-success text-3xl mb-3 drop-shadow-[0_0_10px_rgba(0,255,102,0.5)]"></i>
+            <h3 class="text-xs text-cyber-muted uppercase tracking-widest mb-1">میانگین تیک روزانه</h3>
+            <div class="font-orbitron text-3xl text-white"><span id="stats-avg-checks">0</span> <span class="text-sm">/ 11</span></div>
+        </div>
+
+        <!-- کارت ۴: تعداد شکست‌ها -->
+        <div class="bg-cyber-panel border border-cyber-border rounded-xl p-6 text-center relative overflow-hidden group">
+            <i class="fas fa-heart-broken text-cyber-danger text-3xl mb-3 drop-shadow-[0_0_10px_rgba(255,51,51,0.5)]"></i>
+            <h3 class="text-xs text-cyber-muted uppercase tracking-widest mb-1">تعداد شکست‌ها</h3>
+            <div class="font-orbitron text-3xl text-white"><span id="stats-total-fails">0</span></div>
+        </div>
+
+        <!-- نمودار بزرگ (تمام عرض در موبایل، ۲ ستون در دسکتاپ) -->
+        <div class="bg-cyber-panel border border-cyber-border rounded-xl p-6 md:col-span-2 lg:col-span-4">
+            <h3 class="text-sm text-white mb-4 border-b border-cyber-border pb-2 font-orbitron">روند کلی ۶۰ روز (تعداد تیک روزانه)</h3>
+            <div class="relative h-64 w-full">
+                <canvas id="bigChart"></canvas>
+            </div>
+        </div>
+
     </div>
 </div>
 

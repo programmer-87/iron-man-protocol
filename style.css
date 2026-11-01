@@ -519,3 +519,11 @@ canvas {
     border-color: var(--cyber-neon);
     color: var(--cyber-neon);
 }
+
+/* =========================================
+   18. Stats Modal Chart
+   ========================================= */
+#bigChart {
+    max-height: 100%;
+    width: 100% !important;
+}
