@@ -151,6 +151,10 @@ let isTimerRunning = false;
 let isBreakTime = false;
 let currentTimerMode = { time: 90, label: 'DEEP WORK' };
 let wakeLock = null;
+// =========================================
+// Pomodoro Stats Variables
+// =========================================
+let focusStartTime = null; // زمان شروع تمرکز
 
 const timerModeBtns = document.querySelectorAll('.timer-mode-btn');
 
@@ -849,6 +853,11 @@ function toggleTimer() {
             if (timeLeft <= 0) {
                 clearInterval(timerInterval);
                 isTimerRunning = false;
+                
+                // === ثبت آمار تمرکز (فقط اگه جلسه تمرکز بود، نه استراحت) ===
+                if (!isBreakTime) {
+                    saveFocusSession(currentTimerMode.time);
+                }
 
                 if (isBreakTime) {
                     isBreakTime = false;
@@ -1039,7 +1048,8 @@ function getNotificationState() {
     return JSON.parse(localStorage.getItem(NOTIFICATION_STATE_KEY)) || {
         enabled: false,
         lastMorning: null,
-        lastNight: null
+        lastNight: null,
+        lastIncomplete: null  // ← این خط اضافه شد
     };
 }
 
@@ -1121,6 +1131,23 @@ function scheduleNotifications() {
         });
         state.lastNight = today;
         setNotificationState(state);
+    }
+
+        // یادآور پویا: اگه بعد از ۲۰:۰۰ هنوز تیک امروز ناقصه
+    if (currentHour >= 20 && currentHour < 23) {
+        const dayIndex = appData.currentDay - 1;
+        if (dayIndex >= 0 && dayIndex < TOTAL_DAYS) {
+            const todayChecks = appData.checks[dayIndex].filter(v => v).length;
+            // دقت کن: از today که بالای تابع تعریف شده استفاده می‌کنیم
+            if (todayChecks < TOTAL_HABITS && todayChecks > 0 && state.lastIncomplete !== today) {
+                new Notification("PROTOCOL INCOMPLETE.", {
+                    body: `امروز ${TOTAL_HABITS - todayChecks} قانون مونده. نذار زنجیره بشکنه.`,
+                    icon: "./icon-192x192.png"
+                });
+                state.lastIncomplete = today;
+                setNotificationState(state);
+            }
+        }
     }
 }
 
@@ -1501,4 +1528,50 @@ function updateStatsModal() {
             plugins: { legend: { display: false } }
         }
     });
+
+        // آمار تمرکز
+    const focusStats = loadFocusStats();
+    document.getElementById('stats-focus-today').innerText = focusStats.todayMinutes;
+    document.getElementById('stats-focus-total').innerText = focusStats.totalSessions;
+}
+
+// =========================================
+// 24. Focus Timer Stats
+// =========================================
+function saveFocusSession(minutes) {
+    let focusStats = JSON.parse(localStorage.getItem('ironManFocusStats')) || {
+        totalSessions: 0,
+        todayMinutes: 0,
+        todayDate: new Date().toDateString()
+    };
+
+    // چک کن اگه روز عوض شده، امروز رو ریست کن
+    const today = new Date().toDateString();
+    if (focusStats.todayDate !== today) {
+        focusStats.todayMinutes = 0;
+        focusStats.todayDate = today;
+    }
+
+    focusStats.totalSessions++;
+    focusStats.todayMinutes += minutes;
+
+    localStorage.setItem('ironManFocusStats', JSON.stringify(focusStats));
+    showToast(`جلسه تمرکز ${minutes} دقیقه‌ای ثبت شد!`, 'success');
+}
+
+function loadFocusStats() {
+    const stats = JSON.parse(localStorage.getItem('ironManFocusStats')) || {
+        totalSessions: 0,
+        todayMinutes: 0,
+        todayDate: new Date().toDateString()
+    };
+
+    const today = new Date().toDateString();
+    if (stats.todayDate !== today) {
+        stats.todayMinutes = 0;
+        stats.todayDate = today;
+        localStorage.setItem('ironManFocusStats', JSON.stringify(stats));
+    }
+
+    return stats;
 }
